@@ -7,8 +7,8 @@ import sys
 def get_playlist_tracks(name, playlists):
     for playlist in playlists:
         if playlist['name'].lower() == name.lower():
-            tracks = playlist['tracks'] 
-            return tracks 
+            tracks = playlist['tracks']
+            return tracks
     print "ERROR: No playlist '" + name + "'found"
     exit(1)
 
@@ -22,17 +22,17 @@ def find_and_remove_dups(api, tracks):
             api.remove_entries_from_playlist(entryId)
         else:
             track_set.add(trackId)
-            
+
 
 if len(sys.argv) != 1:
     print "USAGE:"
     print "./delete_dups_from_playlists.py"
     print
-    print "     Will delete all duplicate songs within each playlist" 
+    print "     Will delete all duplicate songs within each playlist"
     exit(0)
 
 api = Mobileclient()
-logged_in = api.login('username', 'password')
+logged_in = api.login('username', 'password', Mobileclient.FROM_MAC_ADDRESS)
 
 if logged_in:
     print "Successfully logged in. Finding duplicates in playlists"
@@ -42,4 +42,3 @@ if logged_in:
         print "Deleting duplicates from " + playlist['name'] + "..."
         tracks = playlist['tracks']
         find_and_remove_dups(api, tracks)
-
