@@ -53,6 +53,7 @@ try:
 except:
     print "No OAuth credentials found! Please setup in the following screen!"
     api.perform_oauth()
+    api.oauth_login(Mobileclient.FROM_MAC_ADDRESS) # If it fails here, it wasn't meant to be
 
 # Then, move on to doing all the work
 if api.is_authenticated():
