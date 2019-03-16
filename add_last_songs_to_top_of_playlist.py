@@ -2,6 +2,7 @@
 from gmusicapi import Mobileclient
 import sys
 
+### Functions 
 
 def get_playlist_tracks(name, playlists):
     for playlist in playlists:
@@ -23,6 +24,7 @@ def move_songs_to_top(api, tracks, num_tracks_to_move):
         else:
             print "Failed to move track " + entry_to_move['id']
 
+### Main
 
 if len(sys.argv) != 3:
     print "USAGE:"
@@ -35,11 +37,24 @@ else:
     playlist_name = sys.argv[1]
     num_songs = sys.argv[2]
 
+# Setup the gmusicapi
 api = Mobileclient()
-logged_in = api.login('username', 'password', Mobileclient.FROM_MAC_ADDRESS)
+api.__init__()
 
-if logged_in:
+
+# Check to see if OAuth credentials available, ask user to setup if not
+try:
+    api.oauth_login(Mobileclient.FROM_MAC_ADDRESS)
+except:
+    print "No OAuth credentials found! Please setup in the following screen!"
+    api.perform_oauth()
+    api.oauth_login(Mobileclient.FROM_MAC_ADDRESS) # If it fails here, it wasn't meant to be
+
+# Then, move on to doing all the work
+if api.is_authenticated():
     print "Successfully logged in. Moving " + num_songs + " tracks to top of playlist"
     playlists = api.get_all_user_playlist_contents()
     tracks = get_playlist_tracks(playlist_name, playlists)
     move_songs_to_top(api, tracks, int(num_songs))
+
+print "Script completed successfully!"
